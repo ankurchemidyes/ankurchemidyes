@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ankur Chemidyes | Premier Suppliers of Footwear Raw Materials</title>
+    <meta name="description"
+        content="Trusted suppliers for VKC, Walkaroo, and Bata. High-quality adhesives, EVA sheets, threads, and more.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb', /* Deep Blue / Indigo Accent */
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    animation: {
+                        blob: "blob 7s infinite",
+                    },
+                    keyframes: {
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Smooth theme transition */
+        html {
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(248, 250, 252, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.7);
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Dropdown Animation */
+        .dropdown-menu {
+            transform-origin: top right;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+        }
+
+        .dropdown-menu.hidden-state {
+            transform: scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+            display: block;
+        }
+
+        .dropdown-menu.active-state {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Animation Delays */
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+    </style>
+
+    <!-- Pre-load Theme to prevent flash -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+
+<body
+    class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-50 font-sans selection:bg-primary-600 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav smooth-transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary-500/30">
+                        A
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">Ankur
+                        Chemidyes</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home"
+                        class="text-slate-600 hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400 font-medium transition-colors">Home</a>
+                    <a href="#products"
+                        class="text-slate-600 hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400 font-medium transition-colors">Products</a>
+                    <a href="#contact"
+                        class="text-slate-600 hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400 font-medium transition-colors">Contact</a>
+
+                    <!-- Theme Switcher -->
+                    <div class="relative">
+                        <button id="theme-toggle"
+                            class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-600 dark:text-slate-300">
+                            <i id="theme-icon" class="fas fa-sun text-lg transition-transform duration-300"></i>
+                        </button>
+
+                        <!-- Dropdown -->
+                        <div id="theme-menu"
+                            class="dropdown-menu hidden-state absolute right-0 mt-2 w-40 rounded-2xl shadow-xl bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 dark:ring-white dark:ring-opacity-10 py-2 overflow-hidden z-50">
+                            <button onclick="setTheme('light')"
+                                class="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-sun w-5 text-center text-amber-500"></i> Light
+                            </button>
+                            <button onclick="setTheme('dark')"
+                                class="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-moon w-5 text-center text-indigo-400"></i> Dark
+                            </button>
+                            <button onclick="setTheme('system')"
+                                class="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-desktop w-5 text-center text-slate-400"></i> System
+                            </button>
+                        </div>
+                    </div>
+
+                    <a href="#contact"
+                        class="px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+                        Get a Quote
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <!-- Animated Background Blobs -->
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none overflow-hidden">
+            <div
+                class="absolute top-20 left-10 w-72 h-72 bg-primary-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-20 animate-blob">
+            </div>
+            <div
+                class="absolute top-40 right-10 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-20 animate-blob animation-delay-2000">
+            </div>
+            <div
+                class="absolute -bottom-8 left-40 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-20 animate-blob animation-delay-4000">
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-semibold mb-8 shadow-sm">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                Industry Leading Suppliers
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-slate-900 dark:text-white">
+                <span class="block">Ankur Chemidyes</span>
+                <span
+                    class="block text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-500 mt-2 pb-2">Premium
+                    Footwear Materials</span>
+            </h1>
+
+            <p
+                class="mt-6 max-w-2xl text-lg md:text-xl text-slate-600 dark:text-slate-400 mx-auto mb-10 leading-relaxed">
+                Premier suppliers of high-grade footwear raw materials. We are the trusted and preferred partners for
+                industry giants ensuring excellence in every step.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#products"
+                    class="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/30 hover:shadow-primary-600/50 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    Explore Products <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#contact"
+                    class="px-8 py-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold rounded-xl shadow-md border border-slate-200 dark:border-slate-700 transition-all duration-300 flex items-center justify-center">
+                    Contact Sales
+                </a>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="mt-24 pt-10 border-t border-slate-200 dark:border-slate-800/60">
+                <p class="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-8">Trusted
+                    by renowned brands</p>
+                <div
+                    class="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-500">
+                    <div class="flex items-center gap-2">
+                        <a href="https://titasindia.com/collections/vkc-pride" target="_blank" rel="noopener noreferrer"
+                            class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                            <h2 class="text-3xl font-black text-slate-800 dark:text-slate-200 whitespace-nowrap">VKC
+                                PRIDE</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="https://www.walkaroo.in/" target="_blank" rel="noopener noreferrer"
+                            class="hover:opacity-80 transition-opacity">
+                            <h2 class="text-3xl font-black text-slate-800 dark:text-slate-200 tracking-tighter">WALKAROO
+                            </h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <a href="https://paragonfootwear.com/?srsltid=AfmBOoqdXT4XwJZgizTW6S4pJC4-2_QUSPOwFa2DKr4_O8xuQilovHt2"
+                            target="_blank" rel="noopener noreferrer"
+                            class="flex items-center gap-1 hover:opacity-80 transition-opacity">
+                            <h2 class="text-4xl font-black text-slate-800 dark:text-slate-200 tracking-tight">PARAGON
+                            </h2>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products"
+        class="py-24 bg-white dark:bg-slate-900/50 border-y border-slate-100 dark:border-slate-800/50 transition-colors duration-300 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6">Our Premium Range</h2>
+                <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Sourcing only the highest grade
+                    raw materials ensuring durability, comfort, and unmatched excellence in footwear manufacturing.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Adhesives -->
+                <div
+                    class="group bg-slate-50 dark:bg-slate-800/40 rounded-3xl p-8 border border-slate-200 dark:border-slate-700/50 hover:border-primary-500/50 dark:hover:border-primary-500/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer">
+                    <div
+                        class="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 text-primary-600 dark:text-primary-400 text-2xl shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-fill-drip"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Adhesives</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Industrial-grade, high-bonding
+                        adhesives perfect for seamless sole attachment and upper bonding. Ensuring maximum longevity.
+                    </p>
+                </div>
+
+                <!-- EVA Sheets -->
+                <div
+                    class="group bg-slate-50 dark:bg-slate-800/40 rounded-3xl p-8 border border-slate-200 dark:border-slate-700/50 hover:border-primary-500/50 dark:hover:border-primary-500/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer">
+                    <div
+                        class="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 text-primary-600 dark:text-primary-400 text-2xl shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">EVA Sheets</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Premium Ethylene Vinyl Acetate sheets
+                        providing excellent cushioning, ultimate flexibility, and advanced shock absorption.</p>
+                </div>
+
+                <!-- Threads -->
+                <div
+                    class="group bg-slate-50 dark:bg-slate-800/40 rounded-3xl p-8 border border-slate-200 dark:border-slate-700/50 hover:border-primary-500/50 dark:hover:border-primary-500/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer">
+                    <div
+                        class="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 text-primary-600 dark:text-primary-400 text-2xl shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Threads</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">High-tensile, durable sewing threads
+                        available in various precise colors and specifications for seamless, unbreakable stitching.</p>
+                </div>
+
+                <!-- Hook & Loop -->
+                <div
+                    class="group bg-slate-50 dark:bg-slate-800/40 rounded-3xl p-8 border border-slate-200 dark:border-slate-700/50 hover:border-primary-500/50 dark:hover:border-primary-500/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer">
+                    <div
+                        class="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 text-primary-600 dark:text-primary-400 text-2xl shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Hook & Loop</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Strong and resilient fastening
+                        solutions designed specifically for sports shoes, sandals, and custom ergonomic footwear.</p>
+                </div>
+
+                <!-- Industrial Gloves -->
+                <div
+                    class="group bg-slate-50 dark:bg-slate-800/40 rounded-3xl p-8 border border-slate-200 dark:border-slate-700/50 hover:border-primary-500/50 dark:hover:border-primary-500/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer">
+                    <div
+                        class="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 text-primary-600 dark:text-primary-400 text-2xl shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-mitten"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Industrial Gloves</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Protective heavy-duty safety gloves
+                        for manufacturing units, ensuring absolute worker safety against chemicals and mechanical risks.
+                    </p>
+                </div>
+
+                <!-- Sleeves -->
+                <div
+                    class="group bg-slate-50 dark:bg-slate-800/40 rounded-3xl p-8 border border-slate-200 dark:border-slate-700/50 hover:border-primary-500/50 dark:hover:border-primary-500/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer">
+                    <div
+                        class="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 text-primary-600 dark:text-primary-400 text-2xl shadow-sm border border-slate-100 dark:border-slate-700 group-hover:scale-110 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Protective Sleeves</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Premium protective arm sleeves
+                        providing essential comfort and safety during the complex shoe manufacturing process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div
+                class="bg-white dark:bg-slate-800/80 rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col lg:flex-row">
+
+                <!-- Info Side -->
+                <div class="lg:w-5/12 p-10 lg:p-14 bg-slate-900 dark:bg-slate-950 text-white relative overflow-hidden">
+                    <!-- Decor -->
+                    <div
+                        class="absolute top-0 right-0 -mr-8 -mt-8 w-48 h-48 rounded-full bg-primary-600 opacity-20 blur-3xl">
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 -ml-8 -mb-8 w-48 h-48 rounded-full bg-indigo-600 opacity-20 blur-3xl">
+                    </div>
+
+                    <h3 class="text-3xl font-bold mb-4 relative z-10">Get in Touch</h3>
+                    <p class="text-slate-400 mb-12 relative z-10 text-lg">Ready to elevate your footwear manufacturing?
+                        Contact our team for bulk orders, customized quotations, and premium partnerships.</p>
+
+                    <div class="space-y-8 relative z-10">
+                        <div class="flex items-start gap-5">
+                            <div
+                                class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10 backdrop-blur-md">
+                                <i class="fas fa-map-marker-alt text-xl text-primary-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-white">Headquarters</h4>
+                                <p class="text-slate-400 mt-2 leading-relaxed">Nallalam<br>Kozhikode, Kerala<br>India
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-5">
+                            <div
+                                class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10 backdrop-blur-md">
+                                <i class="fas fa-envelope text-xl text-primary-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-white">Email Us</h4>
+                                <p class="text-slate-400 mt-2 leading-relaxed">
+                                    <a href="mailto:ankurchemidyes123@gmail.com"
+                                        class="hover:text-primary-400 transition-colors">ankurchemidyes123@gmail.com</a><br>
+                                    <a href="mailto:info@ankurchemidyes.com"
+                                        class="hover:text-primary-400 transition-colors">info@ankurchemidyes.com</a>
+
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-5">
+                            <div
+                                class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10 backdrop-blur-md">
+                                <i class="fas fa-clock text-xl text-primary-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-white">Business Hours</h4>
+                                <p class="text-slate-400 mt-2 leading-relaxed">Monday - Saturday<br>9:00 AM - 6:00 PM
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Side -->
+                <div class="lg:w-7/12 p-10 lg:p-14">
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Send us a message</h3>
+                    <!-- Formspree Contact Form -->
+                    <form id="contact-form" action="https://formspree.io/f/mpqbwgvo" method="POST"
+                        class="space-y-6">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">First
+                                    Name</label>
+                                <input type="text" name="First Name" required
+                                    class="w-full px-5 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="John">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Last
+                                    Name</label>
+                                <input type="text" name="Last Name" required
+                                    class="w-full px-5 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                                    placeholder="Doe">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Email
+                                Address</label>
+                            <input type="email" name="Email" required
+                                class="w-full px-5 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                                placeholder="john@company.com">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Message</label>
+                            <textarea rows="4" name="Message" required
+                                class="w-full px-5 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none"
+                                placeholder="How can we help your business?"></textarea>
+                        </div>
+                        <button type="submit"
+                            class="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:shadow-primary-600/20 transition-all duration-300 transform hover:-translate-y-0.5">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+                        A
+                    </div>
+                    <span class="font-bold text-xl text-white tracking-tight">Ankur Chemidyes</span>
+                </div>
+                <p class="text-sm font-medium">© 2026 Ankur Chemidyes. All rights reserved.</p>
+                <div class="flex space-x-4">
+                    <a href="https://www.linkedin.com/in/ankurchemidyes/" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-primary-600 hover:border-primary-600 hover:text-white transition-all duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://x.com/AnkurChemidyes" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-primary-600 hover:border-primary-600 hover:text-white transition-all duration-300">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://youtu.be/K43cvk1qOt0?si=YIfHctKaYp4i9ieO" target="_blank" rel="noopener noreferrer"
+                        class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-primary-600 hover:border-primary-600 hover:text-white transition-all duration-300">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Theme Switcher Logic -->
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeMenu = document.getElementById('theme-menu');
+        const themeIcon = document.getElementById('theme-icon');
+
+        // Toggle dropdown logic
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (themeMenu.classList.contains('hidden-state')) {
+                themeMenu.classList.remove('hidden-state');
+                // Micro-task delay to ensure display:block is rendered before opacity transition
+                setTimeout(() => {
+                    themeMenu.classList.add('active-state');
+                }, 10);
+            } else {
+                themeMenu.classList.remove('active-state');
+                setTimeout(() => {
+                    themeMenu.classList.add('hidden-state');
+                }, 200);
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!themeToggleBtn.contains(e.target) && !themeMenu.contains(e.target)) {
+                if (themeMenu.classList.contains('active-state')) {
+                    themeMenu.classList.remove('active-state');
+                    setTimeout(() => {
+                        themeMenu.classList.add('hidden-state');
+                    }, 200);
+                }
+            }
+        });
+
+        // Update button icon dynamically based on theme
+        function updateIcon() {
+            // Slight rotate animation on change
+            themeIcon.style.transform = 'rotate(180deg) scale(0.5)';
+            themeIcon.style.opacity = '0';
+
+            setTimeout(() => {
+                if (document.documentElement.classList.contains('dark')) {
+                    themeIcon.className = 'fas fa-moon text-lg text-indigo-400 transition-all duration-300';
+                } else {
+                    themeIcon.className = 'fas fa-sun text-lg text-amber-500 transition-all duration-300';
+                }
+                themeIcon.style.transform = 'rotate(0deg) scale(1)';
+                themeIcon.style.opacity = '1';
+            }, 150);
+        }
+
+        // Init icon
+        updateIcon();
+
+        // Theme Setter function
+        window.setTheme = function (theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else if (theme === 'light') {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                // System default
+                localStorage.removeItem('theme');
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+
+            updateIcon();
+
+            // Close the menu
+            themeMenu.classList.remove('active-state');
+            setTimeout(() => {
+                themeMenu.classList.add('hidden-state');
+            }, 200);
+        };
+
+        // Listen for OS system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                updateIcon();
+            }
+        });
+
+        // Formspree Async Form Submission logic
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const submitBtn = contactForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+
+                // Show loading state
+                submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sending...';
+                submitBtn.disabled = true;
+
+                const data = new FormData(contactForm);
+                try {
+                    const response = await fetch(contactForm.action, {
+                        method: contactForm.method,
+                        body: data,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        alert('Thank you for reaching out! Your message has been sent successfully.');
+                        contactForm.reset();
+                    } else {
+                        let responseData;
+                        try {
+                            responseData = await response.json();
+                        } catch (e) { }
+
+                        if (responseData && Object.hasOwn(responseData, 'errors')) {
+                            alert(responseData.errors.map(error => error.message).join(', '));
+                        } else {
+                            alert('Oops! There was a problem submitting your form.');
+                        }
+                    }
+                } catch (error) {
+                    alert('Oops! There was a problem submitting your form.');
+                } finally {
+                    // Restore button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
