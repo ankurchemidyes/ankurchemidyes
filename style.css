@@ -1,0 +1,17 @@
+/* Smooth transitions strictly for colors and backgrounds */
+* {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+.glass-nav { 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); 
+}
+
+/* Custom select dropdown styling for dark mode */
+select option {
+    background-color: #0f172a; /* slate-900 */
+    color: #f8fafc; /* slate-50 */
+}
