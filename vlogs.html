@@ -64,8 +64,31 @@
         .dark .glass-nav { background: rgba(15, 23, 42, 0.7); }
         .animation-delay-4000 { animation-delay: 4s; }
 
-
+        /* Dropdown Animation */
+        .dropdown-menu {
+            transform-origin: top right;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+        }
+        .dropdown-hidden {
+            transform: scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .dropdown-active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
+
+    <!-- Immediate Theme Initialization to prevent flash -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 
 </head>
 
@@ -78,7 +101,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <a href="Index.html" class="flex-shrink-0 flex items-center gap-3 cursor-pointer">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-3 cursor-pointer">
                     <img src="./Ankur%20logo.png" alt="Ankur Chemidyes Logo" class="w-12 h-12 object-contain">
                     <span class="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">Ankur Chemidyes</span>
                 </a>
@@ -87,25 +110,25 @@
                 <div class="hidden md:flex items-center space-x-8">
                     
                     <!-- Back to Home Link -->
-                    <a href="Index.html" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2">
+                    <a href="index.html" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2">
                         <i class="fas fa-arrow-left text-lg"></i> Back to Home
                     </a>
 
-                    <!-- Theme Switcher Menu -->
+                    <!-- Theme Switcher Dropdown -->
                     <div class="relative">
-                        <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-600 dark:text-slate-300">
-                            <i id="theme-icon" class="fas fa-sun text-lg transition-transform duration-300 text-amber-500"></i>
+                        <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-600 dark:text-slate-300 shadow-sm">
+                            <i id="theme-icon-active" class="fas fa-sun"></i>
                         </button>
-                        <!-- Dropdown -->
-                        <div id="theme-menu" class="hidden absolute right-0 mt-2 w-40 rounded-2xl shadow-xl bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 py-2 overflow-hidden z-50">
-                            <button onclick="changeTheme('light')" class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 text-slate-700 dark:text-slate-200">
-                                <i class="fas fa-sun w-5 text-center text-amber-500"></i> Light
+                        
+                        <div id="theme-menu" class="dropdown-menu dropdown-hidden absolute right-0 mt-3 w-36 rounded-2xl shadow-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 py-2 overflow-hidden z-50">
+                            <button onclick="setTheme('light')" class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-3 text-slate-700 dark:text-slate-200 transition-colors">
+                                <i class="fas fa-sun w-4 text-amber-500"></i> Light
                             </button>
-                            <button onclick="changeTheme('dark')" class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 text-slate-700 dark:text-slate-200">
-                                <i class="fas fa-moon w-5 text-center text-indigo-400"></i> Dark
+                            <button onclick="setTheme('dark')" class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-3 text-slate-700 dark:text-slate-200 transition-colors">
+                                <i class="fas fa-moon w-4 text-indigo-400"></i> Dark
                             </button>
-                            <button onclick="changeTheme('system')" class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 text-slate-700 dark:text-slate-200">
-                                <i class="fas fa-circle-half-stroke w-5 text-center text-blue-500"></i> System
+                            <button onclick="setTheme('system')" class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700/50 flex items-center gap-3 text-slate-700 dark:text-slate-200 transition-colors">
+                                <i class="fas fa-desktop w-4 text-slate-400"></i> System
                             </button>
                         </div>
                     </div>
@@ -239,8 +262,82 @@
         fetchYouTubeVlogs();
     </script>
     
-    <!-- Load external JS for theme handling -->
-    <script src="script.js"></script>
+    <!-- Theme Switcher JavaScript -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeMenu = document.getElementById('theme-menu');
+        const themeIconActive = document.getElementById('theme-icon-active');
+
+        // Update the main button icon based on current theme
+        function updateIcon(theme) {
+            if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                themeIconActive.className = 'fas fa-moon text-indigo-400';
+            } else {
+                themeIconActive.className = 'fas fa-sun text-amber-500';
+            }
+        }
+
+        // Initialize icon on load
+        const currentTheme = localStorage.getItem('theme') || 'system';
+        updateIcon(currentTheme);
+
+        // Toggle Dropdown
+        themeToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (themeMenu.classList.contains('dropdown-hidden')) {
+                themeMenu.classList.remove('dropdown-hidden');
+                themeMenu.classList.add('dropdown-active');
+            } else {
+                themeMenu.classList.add('dropdown-hidden');
+                themeMenu.classList.remove('dropdown-active');
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!themeToggle.contains(e.target) && !themeMenu.contains(e.target)) {
+                themeMenu.classList.add('dropdown-hidden');
+                themeMenu.classList.remove('dropdown-active');
+            }
+        });
+
+        // Handle Theme Change
+        window.setTheme = function(theme) {
+            const html = document.documentElement;
+            
+            if (theme === 'system') {
+                localStorage.removeItem('theme');
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            } else {
+                localStorage.setItem('theme', theme);
+                if (theme === 'dark') {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            }
+            
+            updateIcon(theme);
+            themeMenu.classList.add('dropdown-hidden');
+            themeMenu.classList.remove('dropdown-active');
+        };
+
+        // Listen for system preference changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                updateIcon('system');
+            }
+        });
+    </script>
 
 </body>
 </html>
