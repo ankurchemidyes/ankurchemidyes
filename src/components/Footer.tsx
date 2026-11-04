@@ -43,10 +43,17 @@ export const Footer = () => (
           </div>
         </div>
 
-        {/* Brand + tagline — bottom on mobile, right on desktop */}
-        <div className="flex items-center gap-3 md:order-2">
-          <img src={logo} alt="Ankur Chemidyes" width={36} height={36} loading="lazy" className="h-9 w-9 rounded-lg shadow-elevated" />
-          <div className="text-center md:text-right">
+        {/* Brand + tagline — bottom on mobile, aligned slightly to the left on desktop to match form width */}
+        <div className="flex items-center gap-3.5 md:order-2 md:text-left lg:mr-8 xl:mr-16">
+          <img
+            src={logo}
+            alt="Ankur Chemidyes"
+            width={38}
+            height={38}
+            loading="lazy"
+            className="h-9 w-9 rounded-lg shadow-elevated shrink-0"
+          />
+          <div className="text-center md:text-left">
             <div className="font-display font-semibold">Ankur Chemidyes</div>
             <div className="text-xs text-muted-foreground">Premier Suppliers of Footwear Raw Materials</div>
           </div>

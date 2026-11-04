@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { MapPin, Clock, Mail, Send, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { LocationMap } from "./LocationMap";
 
 const APPS_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxYhzc35nnDkzcFdnBGYNYknwLqdSqzOruOAdISgNUK2wDDEUKxuh8IPKVpUluBE3bV/exec";
@@ -183,6 +184,11 @@ export const Contact = () => {
               </div>
             </form>
           </motion.div>
+        </div>
+
+        {/* Location Map */}
+        <div className="mt-12 sm:mt-16">
+          <LocationMap />
         </div>
       </div>
     </section>
