@@ -141,11 +141,28 @@
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background-image: var(--gradient-hero);
-    background-attachment: fixed;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -157,18 +174,20 @@
 @layer components {
   .glass {
     background: hsl(var(--glass-bg) / var(--glass-alpha));
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid hsl(var(--glass-border) / 0.6);
     box-shadow: var(--shadow-md), var(--shadow-inset);
+    transform: translateZ(0);
   }
 
   .glass-strong {
     background: hsl(var(--glass-bg) / 0.85);
-    backdrop-filter: blur(28px) saturate(200%);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
     border: 1px solid hsl(var(--glass-border) / 0.7);
     box-shadow: var(--shadow-lg), var(--shadow-inset);
+    transform: translateZ(0);
   }
 
   .text-gradient {
@@ -206,9 +225,24 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.035;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    transform: translateZ(0);
+  }
+
+  /* Rendering and scrolling performance optimizations */
+  .section-deferred {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 650px;
+  }
+
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .will-change-transform {
+    will-change: transform;
   }
 
   .social-page {
