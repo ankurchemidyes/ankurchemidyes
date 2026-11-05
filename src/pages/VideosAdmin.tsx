@@ -1,12 +1,13 @@
 import { FormEvent, useEffect, useState } from "react";
-import { ArrowLeft, LogIn, Plus, ShieldCheck, Trash2 } from "lucide-react";
+import { ArrowLeft, LogIn, ShieldCheck, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { useVideoAdmin } from "@/hooks/use-video-admin";
+import { AddVideoForm } from "@/components/videos/AddVideoForm";
 import { supabase } from "@/integrations/supabase/client";
 
 type AdminVideo = { id: string; youtube_video_id: string; title: string; description: string | null };
@@ -14,39 +15,21 @@ type AdminVideo = { id: string; youtube_video_id: string; title: string; descrip
 export default function VideosAdmin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userId, setUserId] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checking, setChecking] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [videoUrl, setVideoUrl] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const { userId, isAdmin, checking } = useVideoAdmin();
   const [videos, setVideos] = useState<AdminVideo[]>([]);
 
   useEffect(() => {
     let active = true;
-    const loadAccess = async () => {
-      const { data } = await supabase.auth.getUser();
-      const id = data.user?.id ?? null;
-      if (!active) return;
-      setUserId(id);
-      if (id) {
-        const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", id).eq("role", "admin").maybeSingle();
-        if (role?.role === "admin") {
-          setIsAdmin(true);
-          await loadVideos();
-        }
-      }
-      setChecking(false);
-    };
-
-    void loadAccess();
-    const { data: listener } = supabase.auth.onAuthStateChange(() => void loadAccess());
-    return () => {
-      active = false;
-      listener.subscription.unsubscribe();
-    };
-  }, []);
+    setVideos([]);
+    if (isAdmin && !checking) {
+      void supabase.from("videos").select("id, youtube_video_id, title, description").order("created_at", { ascending: false }).then(({ data, error }) => {
+        if (!active) return;
+        if (error) toast.error("Could not load your videos.");
+        else setVideos(data ?? []);
+      });
+    }
+    return () => { active = false; };
+  }, [isAdmin, checking, userId]);
 
   const loadVideos = async () => {
     const { data } = await supabase.from("videos").select("id, youtube_video_id, title, description").order("created_at", { ascending: false });
@@ -60,34 +43,8 @@ export default function VideosAdmin() {
     else toast.success("Signed in. Checking admin access…");
   };
 
-  const handleAddVideo = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!userId) return;
-    const youtubeVideoId = extractVideoId(videoUrl);
-    if (!youtubeVideoId) {
-      toast.error("Enter a valid YouTube video link.");
-      return;
-    }
-    setSaving(true);
-    const { error } = await supabase.from("videos").insert({
-      youtube_video_id: youtubeVideoId,
-      title: title.trim() || "Abhiyukth Vlogs video",
-      description: description.trim() || null,
-      created_by: userId,
-    });
-    setSaving(false);
-    if (error) {
-      toast.error(error.message.includes("row-level security") ? "Your account is not approved as an admin." : error.message);
-      return;
-    }
-    setVideoUrl("");
-    setTitle("");
-    setDescription("");
-    toast.success("Video added to the gallery.");
-    await loadVideos();
-  };
-
   const handleDelete = async (id: string) => {
+    if (!isAdmin || checking || !userId) return;
     const { error } = await supabase.from("videos").delete().eq("id", id);
     if (error) toast.error(error.message);
     else {
@@ -124,15 +81,10 @@ export default function VideosAdmin() {
                 <Button type="submit" className="w-full"><LogIn className="h-4 w-4" aria-hidden="true" /> Sign in</Button>
               </form>
             ) : !isAdmin ? (
-              <div className="mt-8 rounded-2xl border border-destructive/30 bg-destructive/10 p-5 text-sm text-muted-foreground">This account is signed in, but it has not been approved for video administration.</div>
+              <div className="mt-8 rounded-2xl border border-destructive/30 bg-destructive/10 p-5 text-sm text-muted-foreground">This account is signed in, but it has not been approved for video administration.<Button type="button" variant="outline" className="mt-4 block" onClick={() => void supabase.auth.signOut()}>Sign out</Button></div>
             ) : (
               <>
-                <form onSubmit={handleAddVideo} className="mt-8 space-y-5">
-                  <div className="space-y-2"><Label htmlFor="video-url">YouTube video URL</Label><Input id="video-url" value={videoUrl} onChange={(event) => setVideoUrl(event.target.value)} placeholder="https://www.youtube.com/watch?v=…" required /></div>
-                  <div className="space-y-2"><Label htmlFor="video-title">Title</Label><Input id="video-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Video title" /></div>
-                  <div className="space-y-2"><Label htmlFor="video-description">Description</Label><Textarea id="video-description" value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Optional description" /></div>
-                  <Button type="submit" disabled={saving}><Plus className="h-4 w-4" aria-hidden="true" /> {saving ? "Adding…" : "Add video"}</Button>
-                </form>
+                <div className="mt-8"><AddVideoForm userId={userId} onAdded={() => void loadVideos()} /></div>
                 <div className="mt-10 border-t border-border/60 pt-6">
                   <h2 className="font-display text-xl font-semibold">Published videos</h2>
                   <div className="mt-4 space-y-3">
@@ -153,17 +105,4 @@ export default function VideosAdmin() {
       <Footer />
     </div>
   );
-}
-
-function extractVideoId(value: string) {
-  try {
-    const url = new URL(value.trim());
-    const host = url.hostname.replace(/^www\./, "");
-    if (host === "youtu.be") return url.pathname.slice(1).match(/^[A-Za-z0-9_-]{11}$/)?.[0] ?? null;
-    if (host !== "youtube.com" && host !== "m.youtube.com") return null;
-    const candidate = url.searchParams.get("v") ?? url.pathname.match(/\/(?:embed|shorts|live)\/([^/?]+)/)?.[1];
-    return candidate?.match(/^[A-Za-z0-9_-]{11}$/)?.[0] ?? null;
-  } catch {
-    return null;
-  }
 }

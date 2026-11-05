@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { BarChart3, Eye, ExternalLink, Play, Users, Youtube } from "lucide-react";
+import { BarChart3, Eye, Plus, Users, Youtube } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
-const YOUTUBE_CHANNEL_ID = "REPLACE_WITH_ABHIYUKTH_VLOGS_CHANNEL_ID";
+import { YOUTUBE_CHANNEL_ID, FEATURED_VIDEO } from "@/lib/youtube";
+import { YouTubeSubscribe } from "@/components/videos/YouTubeSubscribe";
+import { AddVideoForm } from "@/components/videos/AddVideoForm";
+import { useVideoAdmin } from "@/hooks/use-video-admin";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 const CHANNEL_NAME = "Abhiyukth Vlogs";
-const channelConfigured = YOUTUBE_CHANNEL_ID.startsWith("UC") && YOUTUBE_CHANNEL_ID.length > 20;
 
 type Video = {
   id: string;
@@ -18,90 +21,76 @@ type Video = {
 };
 
 type ChannelStats = {
-  subscriberCount: number;
+  subscriberCount: number | null;
+  fetchedAt: string;
   viewCount: number;
   videoCount: number;
 };
 
 export default function Videos() {
   const prefersReducedMotion = useReducedMotion();
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<Video[]>([FEATURED_VIDEO]);
   const [stats, setStats] = useState<ChannelStats | null>(null);
   const [loadingVideos, setLoadingVideos] = useState(true);
   const [loadingStats, setLoadingStats] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const scriptId = "youtube-platform-script";
-    const existingScript = document.getElementById(scriptId);
-    const refreshWidget = () => {
-      const gapi = (window as Window & { gapi?: { ytsubscribe?: { go?: () => void } } }).gapi;
-      gapi?.ytsubscribe?.go?.();
-    };
+  const { userId, isAdmin, checking } = useVideoAdmin();
+  const [addOpen, setAddOpen] = useState(false);
+  const [galleryVersion, setGalleryVersion] = useState(0);
+  const [videosError, setVideosError] = useState(false);
 
-    if (existingScript) {
-      refreshWidget();
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = scriptId;
-    script.src = "https://apis.google.com/js/platform.js";
-    script.async = true;
-    script.onload = refreshWidget;
-    document.head.appendChild(script);
-  }, []);
+  useEffect(() => { if (!isAdmin) setAddOpen(false); }, [isAdmin]);
 
   useEffect(() => {
     let active = true;
 
     const loadVideos = async () => {
-      const { data, error } = await supabase
-        .from("videos")
-        .select("id, youtube_video_id, title, description")
-        .eq("published", true)
-        .order("created_at", { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from("videos")
+          .select("id, youtube_video_id, title, description")
+          .eq("published", true)
+          .order("created_at", { ascending: false });
 
-      if (active) {
-        if (!error && data) setVideos(data);
-        setLoadingVideos(false);
-      }
+        if (active) {
+          setVideosError(!!error);
+          if (!error && data) setVideos([FEATURED_VIDEO, ...data.filter(video => video.youtube_video_id !== FEATURED_VIDEO.youtube_video_id)]);
+        }
+      } catch { if (active) setVideosError(true); }
+      finally { if (active) setLoadingVideos(false); }
     };
 
     void loadVideos();
     return () => {
       active = false;
     };
-  }, []);
+  }, [galleryVersion]);
 
   useEffect(() => {
-    if (!channelConfigured) {
-      setStatsError("Live statistics are waiting for the channel ID configuration.");
-      return;
-    }
-
     let active = true;
     setLoadingStats(true);
 
+    let inFlight = false;
     const loadStats = async () => {
-      const { data, error } = await supabase.functions.invoke("youtube-stats", {
-        body: { channelId: YOUTUBE_CHANNEL_ID },
-      });
-
-      if (!active) return;
-      if (error || !data) {
-        setStatsError("Live statistics are temporarily unavailable.");
-      } else {
+      if (inFlight || document.visibilityState === "hidden") return;
+      inFlight = true;
+      try {
+        const { data, error } = await supabase.functions.invoke("youtube-stats", { body: { channelId: YOUTUBE_CHANNEL_ID } });
+        if (!active) return;
+        if (error || !data || data.error) throw new Error("Statistics unavailable");
         setStats(data as ChannelStats);
         setStatsError(null);
+      } catch {
+        if (active) setStatsError("Live statistics are temporarily unavailable. Any displayed counts are from the last update.");
+      } finally {
+        inFlight = false;
+        if (active) setLoadingStats(false);
       }
-      setLoadingStats(false);
     };
-
     void loadStats();
-    return () => {
-      active = false;
-    };
+    const interval = window.setInterval(() => void loadStats(), 300000);
+    return () => { active = false; window.clearInterval(interval); };
   }, []);
 
   return (
@@ -155,8 +144,9 @@ export default function Videos() {
                   />
                 </div>
                 <p className="mt-5 text-sm text-muted-foreground" role={statsError ? "status" : undefined}>
-                  {statsError ?? (stats ? `${stats.videoCount.toLocaleString()} videos published on the channel.` : "Updating live channel data…")}
+                  {statsError ?? (stats ? `${stats.videoCount.toLocaleString()} videos · Updated ${new Date(stats.fetchedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.` : "Updating live channel data…")}
                 </p>
+                <p className="mt-2 text-xs text-muted-foreground">Refreshes every 5 minutes. Subscriber counts are rounded by YouTube; hidden counts display —.</p>
               </div>
 
               <div className="video-subscribe-panel glass rounded-3xl p-6 shadow-floating md:p-8">
@@ -166,27 +156,9 @@ export default function Videos() {
                       <Youtube className="h-6 w-6" aria-hidden="true" />
                     </div>
                     <h2 className="font-display text-2xl font-semibold">Join the channel</h2>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">Subscribe directly without leaving this page.</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">Use the official YouTube button below. YouTube may open a sign-in or confirmation window.</p>
                   </div>
-                  <div>
-                    <div
-                      className="g-ytsubscribe min-h-12"
-                      data-channelid={YOUTUBE_CHANNEL_ID}
-                      data-layout="full"
-                      data-count="default"
-                      aria-label={`Subscribe to ${CHANNEL_NAME}`}
-                    />
-                    {!channelConfigured && (
-                      <p className="mt-3 text-xs text-muted-foreground">The official widget will activate once the channel ID is configured.</p>
-                    )}
-                    {channelConfigured && (
-                      <Button asChild variant="outline" className="mt-4 w-full">
-                        <a href={`https://www.youtube.com/channel/${YOUTUBE_CHANNEL_ID}?sub_confirmation=1`} target="_blank" rel="noopener noreferrer">
-                          Subscribe on YouTube <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                        </a>
-                      </Button>
-                    )}
-                  </div>
+                  <YouTubeSubscribe />
                 </div>
               </div>
             </div>
@@ -198,20 +170,22 @@ export default function Videos() {
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Video gallery</p>
                 <h2 id="gallery-title" className="mt-2 font-display text-3xl font-semibold md:text-4xl">Watch the latest</h2>
               </div>
-              <p className="max-w-md text-sm text-muted-foreground sm:text-right">Every play happens inside YouTube, so views are counted on the channel.</p>
+              <p className="max-w-md text-sm text-muted-foreground sm:text-right">Watch with the official YouTube player. YouTube validates and counts eligible views.</p>
             </div>
 
-            {loadingVideos ? (
-              <div className="video-empty-state glass rounded-3xl p-10 text-center text-muted-foreground">Loading the video gallery…</div>
-            ) : videos.length === 0 ? (
-              <div className="video-empty-state glass rounded-3xl p-10 text-center">
-                <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-secondary text-primary">
-                  <Play className="h-6 w-6" aria-hidden="true" />
-                </div>
-                <h3 className="mt-5 font-display text-xl font-semibold">Your video gallery is ready</h3>
-                <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">Published videos added by the channel admin will appear here.</p>
+            {!checking && isAdmin && userId && (
+              <div className="mb-6">
+                <Button onClick={() => setAddOpen(true)}><Plus className="h-4 w-4" aria-hidden="true" />Add Video</Button>
+                <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                  <DialogContent>
+                    <DialogHeader><DialogTitle>Add a video</DialogTitle><DialogDescription>Paste a YouTube link to publish it in the gallery.</DialogDescription></DialogHeader>
+                    <AddVideoForm userId={userId} onAdded={() => { setAddOpen(false); setGalleryVersion(version => version + 1); }} />
+                  </DialogContent>
+                </Dialog>
               </div>
-            ) : (
+            )}
+            {loadingVideos && <p role="status" className="mb-4 text-sm text-muted-foreground">Loading more videos…</p>}
+            {videosError && <div role="status" className="mb-4 flex items-center gap-3 text-sm text-muted-foreground">More videos could not be loaded.<Button variant="outline" onClick={() => setGalleryVersion(version => version + 1)}>Try again</Button></div>}
               <div className="grid gap-6 md:grid-cols-2">
                 {videos.map((video, index) => (
                   <motion.article
@@ -227,6 +201,7 @@ export default function Videos() {
                         src={`https://www.youtube.com/embed/${video.youtube_video_id}`}
                         title={video.title}
                         loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                       />
@@ -238,7 +213,6 @@ export default function Videos() {
                   </motion.article>
                 ))}
               </div>
-            )}
           </section>
         </div>
       </main>
@@ -248,16 +222,17 @@ export default function Videos() {
 }
 
 function FlipMetric({ icon, label, value, loading }: { icon: React.ReactNode; label: string; value: number | null; loading: boolean }) {
+  const reducedMotion = useReducedMotion();
   const formatted = value === null ? "—" : value.toLocaleString();
   return (
     <div className="video-metric rounded-2xl border border-border/60 bg-background/40 p-5">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">{icon}{label}</div>
       <motion.div
         key={formatted}
-        initial={{ rotateX: -90, opacity: 0 }}
+        initial={reducedMotion ? false : { rotateX: -90, opacity: 0 }}
         animate={{ rotateX: 0, opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-3 origin-bottom font-display text-4xl font-bold text-gradient md:text-5xl"
+        className="mt-3 origin-bottom font-display text-[clamp(1.5rem,3vw,2.75rem)] font-bold tabular-nums text-gradient break-words"
         aria-live="polite"
       >
         {loading ? "…" : formatted}

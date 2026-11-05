@@ -1,1 +1,4 @@
 project_id = "goqsfcoeapnwmgavahxv"
+# Public, read-only channel stats; no user JWT is required.
+[functions.youtube-stats]
+verify_jwt = false

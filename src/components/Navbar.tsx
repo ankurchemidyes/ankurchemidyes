@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 
 const links = [
-  { href: "#home", label: "Home" },
-  { href: "#products", label: "Products" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#home", label: "Home" },
+  { href: "/#products", label: "Products" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export const Navbar = () => {
@@ -36,7 +36,7 @@ export const Navbar = () => {
             scrolled ? "glass-strong shadow-floating" : "glass"
           )}
         >
-          <a href="#home" className="flex items-center gap-3 pl-2">
+          <a href="/#home" className="flex items-center gap-3 pl-2">
             <motion.img
               src={logo}
               alt="Ankur Chemidyes logo"
